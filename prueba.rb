@@ -45,6 +45,18 @@ def ausentes
   end
 end
 
+def aprobados(minima = 5)
+  # Ejecuto guardar promedio para corrobar que el archivo con promedios exista
+  guardar_promedio
+  promedios = File.open('promedios.txt')
+  lineas = promedios.readlines
+  promedios.close
+  aprobacion = {}
+  lineas.each do |linea|
+    aprobacion[linea.split[0]] = linea.split[1].to_i >= minima
+  end
+  aprobacion
+end
 
 salir = false
 
@@ -52,7 +64,7 @@ until salir
   print "\n"
   op = mostrar_menu
   while op.zero? || op > 4
-    puts "Ingrese una opción válida"
+    puts 'Ingrese una opción válida'
     op = mostrar_menu
   end
   puts "\n" if (1..4).to_a.include?(op.to_i)
@@ -63,7 +75,12 @@ until salir
     puts 'Se generó el archivo promedios.txt con el promedio de cada alumno'
   when 2
     ausentes
-    #    when 3
+  when 3
+    alumnos = aprobados
+    alumnos.each do |alumno, aprobo|
+      puts "#{alumno} aprobó" if aprobo
+      puts "#{alumno} reprobó" unless aprobo
+    end
   when 4
     salir = true
   end
