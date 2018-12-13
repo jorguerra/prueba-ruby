@@ -76,7 +76,16 @@ until salir
   when 2
     ausentes
   when 3
-    alumnos = aprobados
+    print 'Ingrese la nota mínima para aprobar (5 por defecto): '
+    valor = gets.chomp.strip
+    minima = valor.length.zero? ? 5 : valor.to_i
+    until minima > 0
+      print "Valor inválido. Ingrese un número mayor a 0\n" \
+            'Ingrese la nota mínima para aprobar (5 por defecto): '
+      valor = gets.chomp.strip
+      minima = valor.length.zero? ? 5 : valor.to_i
+    end
+    alumnos = aprobados(minima)
     alumnos.each do |alumno, aprobo|
       puts "#{alumno} aprobó" if aprobo
       puts "#{alumno} reprobó" unless aprobo
