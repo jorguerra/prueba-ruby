@@ -34,15 +34,14 @@ def ausentes
   file = File.open('data.txt', 'r')
   lineas = file.readlines
   file.close
+  alumnos = {}
   lineas.each do |linea|
     data = linea.split(',')
-    total = data[1..data.length].inject(0) do |acc, n|
-      acc + (n.strip == 'A' ? 1 : 0)
-    end
-    puts "#{data[0]} asistió a todas las pruebas" if total.zero?
-    prueba = 'prueba' + (total.to_i > 1 ? 's' : '')
-    puts "#{data[0]} estuvo ausente en #{total} #{prueba}" if total > 0
+    largo = data.length
+    total = data[1..largo].inject(0) { |acc, n| acc + (n.strip == 'A' ? 1 : 0) }
+    alumnos[data[0]] = total
   end
+  alumnos
 end
 
 def aprobados(minima = 5)
@@ -74,7 +73,12 @@ until salir
     guardar_promedio
     puts 'Se generó el archivo promedios.txt con el promedio de cada alumno'
   when 2
-    ausentes
+    alumnos = ausentes
+    alumnos.each do |alumno, ausencias|
+      puts "#{alumno} asistió a todas las pruebas" if ausencias.zero?
+      prueba = 'prueba' + (ausencias.to_i > 1 ? 's' : '')
+      puts "#{alumno} estuvo ausente en #{ausencias} #{prueba}" if ausencias > 0
+    end
   when 3
     print 'Ingrese la nota mínima para aprobar (5 por defecto): '
     valor = gets.chomp.strip
